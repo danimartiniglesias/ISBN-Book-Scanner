@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef, useState } from 'react';
 import { BrowserMultiFormatReader, IScannerControls } from '@zxing/browser';
 
@@ -13,71 +12,44 @@ const Scanner: React.FC<ScannerProps> = ({ onScanSuccess }) => {
   const controlsRef = useRef<IScannerControls | null>(null);
 
   useEffect(() => {
-    // Dynamically load the zxing script if it's not already loaded
-    const scriptId = 'zxing-scanner-script';
-    let script = document.getElementById(scriptId) as HTMLScriptElement;
+    if (!videoRef.current) return;
 
-    const initializeScanner = () => {
-        if (!videoRef.current) return;
-        
-        const codeReader = new BrowserMultiFormatReader();
-        
-        navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
-            .then(stream => {
-                if (videoRef.current) {
-                    videoRef.current.srcObject = stream;
-                    setIsLoading(false);
-                    codeReader.decodeFromVideoDevice(undefined, videoRef.current, (result, err, controls) => {
-                        controlsRef.current = controls;
-                        if (result) {
-                            onScanSuccess(result.getText());
-                        }
-                        if (err && !(err instanceof DOMException)) {
-                            // We can ignore NotFoundException, which happens when no barcode is found
-                        }
-                    });
-                }
-            })
-            .catch(err => {
-                console.error("Camera access error:", err);
-                setError("No se pudo acceder a la cámara. Por favor, revisa los permisos.");
-                setIsLoading(false);
-            });
+    const codeReader = new BrowserMultiFormatReader();
 
-        return () => {
-            if (controlsRef.current) {
-                controlsRef.current.stop();
-                controlsRef.current = null;
+    const startScanner = async () => {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream;
+          setIsLoading(false);
+          const controls = await codeReader.decodeFromVideoDevice(undefined, videoRef.current, (result, err) => {
+            if (result) {
+              onScanSuccess(result.getText());
             }
-        };
+            // We can ignore NotFoundException and other minor errors that occur during scanning
+          });
+          controlsRef.current = controls;
+        }
+      } catch (err) {
+        console.error("Camera access error:", err);
+        setError("No se pudo acceder a la cámara. Por favor, revisa los permisos.");
+        setIsLoading(false);
+      }
     };
-    
-    if (!script) {
-        script = document.createElement('script');
-        script.id = scriptId;
-        script.src = 'https://cdn.jsdelivr.net/npm/@zxing/browser@0.1.4/es2015/zxing-browser.min.js';
-        script.async = true;
-        script.onload = () => {
-            console.log('ZXing script loaded.');
-            initializeScanner();
-        };
-        document.body.appendChild(script);
-    } else {
-        initializeScanner();
-    }
-    
+
+    startScanner();
+
     return () => {
       if (controlsRef.current) {
         controlsRef.current.stop();
         controlsRef.current = null;
       }
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [onScanSuccess]);
   
   return (
     <div className="relative w-full aspect-square bg-black rounded-lg overflow-hidden">
-      <video ref={videoRef} className="w-full h-full object-cover" />
+      <video ref={videoRef} className="w-full h-full object-cover" autoPlay playsInline />
       <div className="absolute inset-0 flex items-center justify-center p-4">
         <div className="w-full max-w-xs h-2/5 border-4 border-dashed border-white/50 rounded-lg"></div>
       </div>

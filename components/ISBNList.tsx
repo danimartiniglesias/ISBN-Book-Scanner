@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { DownloadIcon, TrashIcon, TxtFileIcon, CsvFileIcon } from './icons';
 
@@ -15,7 +14,7 @@ const ISBNList: React.FC<ISBNListProps> = ({ isbns, onDelete, onExportTXT, onExp
       <div className="text-center p-10 bg-white rounded-lg shadow">
         <h2 className="text-xl font-semibold text-slate-700">Tu lista está vacía</h2>
         <p className="text-slate-500 mt-2">
-          Presiona el botón "Escanear nuevo ISBN" para empezar a añadir libros.
+          Presiona el botón "Escanear nuevo ISBN" para empezar a añadir libros
         </p>
       </div>
     );
