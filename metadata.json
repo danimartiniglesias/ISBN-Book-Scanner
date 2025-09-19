@@ -1,0 +1,7 @@
+{
+  "name": "ISBN Book Scanner",
+  "description": "A simple and fast barcode scanner to capture and list ISBNs from books. Scan book barcodes, confirm the ISBN, and build a list that you can export to TXT or CSV files. Ideal for inventory or personal library cataloging.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
