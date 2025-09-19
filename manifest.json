@@ -1,15 +1,15 @@
-
 {
   "short_name": "ISBN Scanner",
   "name": "ISBN Book Scanner",
+  "description": "A simple and fast barcode scanner to capture and list ISBNs from books. Scan book barcodes, confirm the ISBN, and build a list that you can export to TXT or CSV files. Ideal for inventory or personal library cataloging.",
   "icons": [
     {
-      "src": "https_//picsum.photos/192",
+      "src": "https://picsum.photos/192",
       "type": "image/png",
       "sizes": "192x192"
     },
     {
-      "src": "https_//picsum.photos/512",
+      "src": "https://picsum.photos/512",
       "type": "image/png",
       "sizes": "512x512"
     }
